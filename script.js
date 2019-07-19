@@ -7,24 +7,31 @@ function createStudent(name, age)
 	};
 }
 
+function cloneArray(array)
+{
+	var cloneArray = [];
+
+	for(var key in array){
+		cloneArray[key] = array[key];
+	}
+
+	return cloneArray;
+}
 
 function manageStudents(students)
 {
 	var manager = {
 
-		setStudent : function(name, age){
-			students.push(createStudent(name, age));
+		setStudent : function(student){
+			students.push(student);
 		},
 
 		deleteStudentByName : function(name){
 			
 			var index = students.findIndex(function(element, index){
-				if(element.name === name){
-					return true;
-				}
-
-				return false;
+				return element.name === name;
 			});
+
 
 			if(index != -1){
 				students.splice(index, 1);
@@ -34,9 +41,7 @@ function manageStudents(students)
 		getStudentByName : function(name){
 
 			var student = students.find(function(element){
-				if(element.name === name){
-					return element;
-				}
+				return element.name === name;
 			});
 
 			return student ? student : null;
@@ -91,8 +96,10 @@ function manageStudents(students)
 		},
 
 		getStudentsListSortedByName : function(){
+
+			var sortedStudents = cloneArray(students);
 			
-			return students.sort(function(firstStudent, secondStudent){
+			return sortedStudents.sort(function(firstStudent, secondStudent){
 				
 				if(firstStudent.name < secondStudent.name){
 					return 1;
@@ -106,11 +113,13 @@ function manageStudents(students)
 
 		getStudentsListSortedByAverageMark : function(){
 
-			return students.sort(function(firstStudent, secondStudent){
+			var sortedStudents = cloneArray(students);
+			
+			return sortedStudents.sort(function(firstStudent, secondStudent){
 				
 				var firstStudentAverageMark = manager.getAverageMarkByName(firstStudent.name);
 				var secondStudentAverageMark = manager.getAverageMarkByName(secondStudent.name);
-		
+
 				if(firstStudentAverageMark < secondStudentAverageMark){
 					return 1;
 				}else if(firstStudentAverageMark > secondStudentAverageMark){
@@ -126,18 +135,18 @@ function manageStudents(students)
 }
 
 var students = [
-	createStudent('Nana', 19),
-	createStudent('Alex', 22),
-	createStudent('Lola', 21),
-	createStudent('Kolya', 18)
+createStudent('Nana', 19),
+createStudent('Alex', 22),
+createStudent('Lola', 21),
+createStudent('Kolya', 18)
 ];
 
 var manager = manageStudents(students);
 
 // добавляем студентов
-manager.setStudent('Ulya', 20);
-manager.setStudent('Irina', 25);
-manager.setStudent('Vlad', 24);
+manager.setStudent(createStudent('Ulya', 20));
+manager.setStudent(createStudent('Irina', 25));
+manager.setStudent(createStudent('Vlad', 24));
 
 // ставим оценки
 manager.setMark('Nana', 1, 10);
