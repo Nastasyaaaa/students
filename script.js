@@ -9,18 +9,18 @@ function createStudent(name, age)
 
 function cloneArray(array)
 {
-	var cloneArray = [];
-
-	for(var key in array){
-		cloneArray[key] = array[key];
-	}
+	var cloneArray = array.slice(0);
 
 	return cloneArray;
 }
 
 function manageStudents(students)
 {
+	students = cloneArray(students);
+
 	var manager = {
+
+		students : students,
 
 		setStudent : function(student){
 			students.push(student);
@@ -96,10 +96,8 @@ function manageStudents(students)
 		},
 
 		getStudentsListSortedByName : function(){
-
-			var sortedStudents = cloneArray(students);
 			
-			return sortedStudents.sort(function(firstStudent, secondStudent){
+			return students.sort(function(firstStudent, secondStudent){
 				
 				if(firstStudent.name < secondStudent.name){
 					return 1;
@@ -112,10 +110,8 @@ function manageStudents(students)
 		},
 
 		getStudentsListSortedByAverageMark : function(){
-
-			var sortedStudents = cloneArray(students);
 			
-			return sortedStudents.sort(function(firstStudent, secondStudent){
+			return students.sort(function(firstStudent, secondStudent){
 				
 				var firstStudentAverageMark = manager.getAverageMarkByName(firstStudent.name);
 				var secondStudentAverageMark = manager.getAverageMarkByName(secondStudent.name);
@@ -170,7 +166,7 @@ manager.setMark('Irina', 1, 6);
 manager.setMark('Irina', 2, 8);
 
 //изначальный массив 
-console.log(students);
+console.log(manager.students);
 
 // получаем студента
 console.log(manager.getStudentByName('Irina'));
@@ -185,7 +181,7 @@ console.log(manager.getAverageStudentsMarkByLesson(1));
 manager.deleteStudentByName('Irina');
 
 // список после удаления
-console.log(students);
+console.log(manager.students);
 
 // средняя оценка группы за занятие номер 1 после удаления студента
 console.log(manager.getAverageStudentsMarkByLesson(1));
