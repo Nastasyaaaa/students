@@ -20,7 +20,9 @@ function manageStudents(students)
 
 	var manager = {
 
-		students : students,
+		getStudents : function(){
+			return students;
+		},
 
 		setStudent : function(student){
 			students.push(student);
@@ -166,7 +168,7 @@ manager.setMark('Irina', 1, 6);
 manager.setMark('Irina', 2, 8);
 
 //изначальный массив 
-console.log(manager.students);
+console.log(manager.getStudents());
 
 // получаем студента
 console.log(manager.getStudentByName('Irina'));
@@ -181,7 +183,7 @@ console.log(manager.getAverageStudentsMarkByLesson(1));
 manager.deleteStudentByName('Irina');
 
 // список после удаления
-console.log(manager.students);
+console.log(manager.getStudents());
 
 // средняя оценка группы за занятие номер 1 после удаления студента
 console.log(manager.getAverageStudentsMarkByLesson(1));
