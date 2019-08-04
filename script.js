@@ -1,196 +1,161 @@
-function createStudent(name, age)
+function Student(name, age)
 {
-	return {
-		name : name,
-		age : age,
-		marks : []
-	};
+	this.name = name;
+	this.age = age;
+	this.marks = [];
 }
 
-function cloneArray(array)
-{
-	var cloneArray = array.slice(0);
+Student.prototype.setMark = function(lessonId, mark){
+	this.marks[lessonId] = mark;
+};
 
-	return cloneArray;
+Student.prototype.getAverageMark = function(){
+
+	var sum = 0;
+	var count = 0;
+
+	this.marks.forEach(function(mark){
+		sum += mark;
+		count++;
+	});
+
+	if(sum && count){
+		return Math.round(sum / count);
+	}
+
+	return null;
+};
+
+//GROUP
+function Group()
+{
+	this.push.apply(this, arguments);
 }
 
-function manageStudents(students)
-{
-	students = cloneArray(students);
+Group.prototype = Object.create(Array.prototype);
 
-	var manager = {
+Group.prototype.setStudent = function(student){
+	this.push(student);
+};
 
-		getStudents : function(){
-			return students;
-		},
+Group.prototype.deleteStudentByName = function(name){
 
-		setStudent : function(student){
-			students.push(student);
-		},
-
-		deleteStudentByName : function(name){
-			
-			var index = students.findIndex(function(element, index){
-				return element.name === name;
-			});
+	var index = this.findIndex(function(element, index){
+		return element.name === name;
+	});
 
 
-			if(index != -1){
-				students.splice(index, 1);
-			} 
-		},
+	if(index != -1){
+		this.splice(index, 1);
+	} 
+};
 
-		getStudentByName : function(name){
+Group.prototype.getStudentByName = function(name){
 
-			var student = students.find(function(element){
-				return element.name === name;
-			});
+	var student = this.find(function(element){
+		return element.name === name;
+	});
 
-			return student ? student : null;
-		},
+	return student ? student : null;
+};
 
-		setMark : function(name, lessonId, mark){
-			var student = manager.getStudentByName(name);
-			
-			if(student){
-				student.marks[lessonId] = mark;
-			}
-		},
 
-		getAverageMarkByName : function(name){
-			
-			var student = manager.getStudentByName(name);
+Group.prototype.getAverageStudentsMarkByLesson = function(lessonId){
 
-			if(student){
-				var sum = 0;
-				var count = 0;
+	var sum = 0;
+	var count = 0;
 
-				student.marks.forEach(function(mark){
-					sum += mark;
-					count++;
-				});
-
-				if(sum && count){
-					return Math.round(sum / count);
-				}
-			}
-
-			return null;
-		},
-
-		getAverageStudentsMarkByLesson : function(lessonId){
-			
-			var sum = 0;
-			var count = 0;
-
-			students.forEach(function(student){
-				if(student.marks[lessonId]){
-					sum += student.marks[lessonId];
-					count++;
-				}
-			});
-
-			if(sum && count){
-				return Math.round(sum / count);
-			}
-
-			return null;
-		},
-
-		getStudentsListSortedByName : function(){
-			
-			return students.sort(function(firstStudent, secondStudent){
-				
-				if(firstStudent.name < secondStudent.name){
-					return 1;
-				}else if(firstStudent.name > secondStudent.name){
-					return -1;
-				}
-
-				return 0;
-			});
-		},
-
-		getStudentsListSortedByAverageMark : function(){
-			
-			return students.sort(function(firstStudent, secondStudent){
-				
-				var firstStudentAverageMark = manager.getAverageMarkByName(firstStudent.name);
-				var secondStudentAverageMark = manager.getAverageMarkByName(secondStudent.name);
-
-				if(firstStudentAverageMark < secondStudentAverageMark){
-					return 1;
-				}else if(firstStudentAverageMark > secondStudentAverageMark){
-					return -1;
-				}
-
-				return 0;
-			});
+	this.forEach(function(student){
+		if(student.marks[lessonId]){
+			sum += student.marks[lessonId];
+			count++;
 		}
-	};
+	});
 
-	return manager;
+	if(sum && count){
+		return Math.round(sum / count);
+	}
+
+	return null;
+};
+
+Group.prototype.getStudentsListSortedByName = function(){
+
+	return this.sort(function(firstStudent, secondStudent){
+
+		if(firstStudent.name < secondStudent.name){
+			return 1;
+		}else if(firstStudent.name > secondStudent.name){
+			return -1;
+		}
+
+		return 0;
+	});
+};
+
+Group.prototype.getStudentsListSortedByAverageMark = function(){
+
+	return this.sort(function(firstStudent, secondStudent){
+
+		var firstStudentAverageMark = firstStudent.getAverageMark();
+		var secondStudentAverageMark = secondStudent.getAverageMark();
+
+		if(firstStudentAverageMark < secondStudentAverageMark){
+			return 1;
+		}else if(firstStudentAverageMark > secondStudentAverageMark){
+			return -1;
+		}
+
+		return 0;
+	});
 }
 
-var students = [
-createStudent('Nana', 19),
-createStudent('Alex', 22),
-createStudent('Lola', 21),
-createStudent('Kolya', 18)
-];
+var nana = new Student('Nana', 19);
+var alex = new Student('Alex', 22);
+var lola = new Student('Lola', 21);
 
-var manager = manageStudents(students);
+var group = new Group(nana, alex, lola);
 
 // добавляем студентов
-manager.setStudent(createStudent('Ulya', 20));
-manager.setStudent(createStudent('Irina', 25));
-manager.setStudent(createStudent('Vlad', 24));
+group.setStudent(new Student('Ulya', 20));
+group.setStudent(new Student('Irina', 25));
+group.setStudent(new Student('Vlad', 24));
 
 // ставим оценки
-manager.setMark('Nana', 1, 10);
-manager.setMark('Nana', 2, 8);
 
-manager.setMark('Ulya', 1, 9);
-manager.setMark('Ulya', 2, 4);
+group[0].setMark(1, 3);
+group[0].setMark(2, 10);
 
-manager.setMark('Alex', 1, 9);
-manager.setMark('Alex', 2, 10);
+group[1].setMark(1, 10);
+group[1].setMark(2, 8);
 
-manager.setMark('Kolya', 1, 8);
+group[2].setMark(1, 9);
+group[2].setMark(2, 4);
 
-manager.setMark('Lola', 1, 3);
-manager.setMark('Lola', 2, 10);
+group[3].setMark(1, 9);
+group[3].setMark(2, 10);
 
-manager.setMark('Vlad', 1, 10);
-manager.setMark('Vlad', 2, 10);
+// // получаем студента
+console.log(group.getStudentByName('Irina'));
 
-manager.setMark('Irina', 1, 6);
-manager.setMark('Irina', 2, 8);
+// // средний бал студента
+console.log(group[0].getAverageMark())
 
-//изначальный массив 
-console.log(manager.getStudents());
+// // средняя оценка группы за занятие номер 1
+console.log(group.getAverageStudentsMarkByLesson(1));
 
-// получаем студента
-console.log(manager.getStudentByName('Irina'));
+// // удаляем студента
+group.deleteStudentByName('Irina');
 
-// средний бал студента по имени
-console.log(manager.getAverageMarkByName('Irina'))
+// // список после удаления
+console.log(group);
 
-// средняя оценка группы за занятие номер 1
-console.log(manager.getAverageStudentsMarkByLesson(1));
+// // средняя оценка группы за занятие номер 1 после удаления студента
+console.log(group.getAverageStudentsMarkByLesson(1));
 
-// удаляем студента
-manager.deleteStudentByName('Irina');
+// // список студентов отсортированный по имени
+console.log(group.getStudentsListSortedByName());
 
-// список после удаления
-console.log(manager.getStudents());
-
-// средняя оценка группы за занятие номер 1 после удаления студента
-console.log(manager.getAverageStudentsMarkByLesson(1));
-
-// список студентов отсортированный по имени
-console.log(manager.getStudentsListSortedByName());
-
-// список студентов отсортированный по среднему баллу
-console.log(manager.getStudentsListSortedByAverageMark());
+// // список студентов отсортированный по среднему баллу
+console.log(group.getStudentsListSortedByAverageMark());
 
