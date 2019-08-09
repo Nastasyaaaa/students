@@ -11,14 +11,16 @@ Student.prototype.setMark = function(lessonId, mark){
 
 Student.prototype.getAverageMark = function(){
 
-	var sum = 0;
 	var count = 0;
 
-	this.marks.forEach(function(mark){
-		sum += mark;
-		count++;
-	});
-
+	var sum = this.reduce(function(accumulator, current){
+		if(current.marks[lessonId]){
+			count++;
+			return accumulator + current.marks[lessonId];
+		}
+		return accumulator;
+	}, 0);
+	
 	if(sum && count){
 		return Math.round(sum / count);
 	}
@@ -123,17 +125,17 @@ group.setStudent(new Student('Vlad', 24));
 
 // ставим оценки
 
-group[0].setMark(1, 3);
-group[0].setMark(2, 10);
+group[0].setMark(0, 3);
+group[0].setMark(1, 10);
 
-group[1].setMark(1, 10);
-group[1].setMark(2, 8);
+group[1].setMark(0, 10);
+group[1].setMark(1, 8);
 
-group[2].setMark(1, 9);
-group[2].setMark(2, 4);
+group[2].setMark(0, 9);
+group[2].setMark(1, 4);
 
-group[3].setMark(1, 9);
-group[3].setMark(2, 10);
+group[3].setMark(0, 9);
+group[3].setMark(1, 10);
 
 // // получаем студента
 console.log(group.getStudentByName('Irina'));
